@@ -4,7 +4,7 @@ FROM python:latest
 
 WORKDIR /usr/src/app
 
-COPY backend/requirements.txt ./
+COPY requirements.txt ./
 
 # RUN python3 -m venv venv
 
@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 
 # RUN apt-get install -y python3-fastapi python3-uvicorn
 
-COPY backend .
+COPY . .
 
 # CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 

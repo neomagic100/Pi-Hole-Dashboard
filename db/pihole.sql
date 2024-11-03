@@ -1,6 +1,6 @@
 USE pihole;
 
-CREATE TABLE IF NOT EXISTS `querylog` (
+CREATE TABLE IF NOT EXISTS `query_log` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
    `queryTime` datetime NOT NULL,
    `queryType` varchar(5) NOT NULL,
@@ -12,3 +12,8 @@ CREATE TABLE IF NOT EXISTS `querylog` (
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE IF NOT EXISTS `disabled_timer` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `time` datetime NOT NULL,
+   `disableMinutes` int(4) NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

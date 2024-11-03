@@ -1,0 +1,30 @@
+services:
+   backend:
+      container_name: backend
+      build:
+         context: .
+         dockerfile: Dockerfiles/backend.dockerfile
+      ports:
+         - "8000:8000"
+      restart: on-failure
+      volumes:
+         - BACKEND_DATA:/usr/src/app
+
+   db:
+      container_name: db
+      image: mysql:latest
+      restart: always
+      environment:
+         MYSQL_DATABASE: "pihole"
+         MYSQL_USER: "user"
+         MYSQL_PASSWORD: "password"
+         MYSQL_ROOT_PASSWORD: "password"
+      ports:
+         - "3306:3306"
+      volumes:
+         - DB_DATA:/var/lib/mysql
+         - ./db:/docker-entrypoint-initdb.d
+
+volumes:
+   DB_DATA:
+   BACKEND_DATA:

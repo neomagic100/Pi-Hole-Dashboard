@@ -1,0 +1,15 @@
+{
+  "name": "websockets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "websocket-main.js",
+  "scripts": {
+    "serve": "node websocket-main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "ws": "^8.18.0"
+  }
+}

@@ -1,2 +1,5 @@
 __pycache__
 get-pip.py
+*/node_modules
+node_modules
+.vscode

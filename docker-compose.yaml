@@ -19,6 +19,15 @@ services:
       ports:
          - "8080:80"
 
+   middleware:
+      container_name: websocket
+      build:
+         context: websockets
+         dockerfile: middleware.dockerfile
+      ports:
+         - "8008:8008"
+      restart: on-failure
+
    db:
       container_name: db
       image: mysql:latest

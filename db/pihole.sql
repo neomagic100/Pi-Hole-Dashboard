@@ -17,3 +17,20 @@ CREATE TABLE IF NOT EXISTS `disabled_timer` (
    `time` datetime NOT NULL,
    `disableMinutes` int(4) NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Enable the event scheduler if it is not already enabled
+SET GLOBAL event_scheduler = ON;
+
+-- Create an event to delete rows where queryTime is more than 48 hours old
+CREATE EVENT IF NOT EXISTS delete_old_queries
+ON SCHEDULE EVERY 1 HOUR
+DO
+  DELETE FROM query_log
+  WHERE queryTime < NOW() - INTERVAL 48 HOUR;
+
+-- Create an event to delete rows where time is less than or equal to the current time
+CREATE EVENT IF NOT EXISTS delete_expired_timers
+ON SCHEDULE EVERY 1 HOUR
+DO
+  DELETE FROM disabled_timer
+  WHERE time <= NOW();

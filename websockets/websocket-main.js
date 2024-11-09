@@ -41,6 +41,8 @@ const createMessage = (msgType) => {
     type: msgType,
     data: data
   });
+
+  if (msgType === API_GET_LOGS) console.log(data);
   return msg;
 }
 
@@ -115,11 +117,19 @@ async function fetchLogs() {
       axios.get(getUrl(PI_2, API_GET_LOGS))
     ]);
 
-    // Structure data as needed
-    latestLogs = {
-      pi1: data1.data,
-      pi2: data2.data
-    };
+    if (data1.data) {
+      for (let item of data1.data.data) {
+        item.push("Proxmox");
+      }
+      latestLogs = [...data1.data.data];
+    }
+
+    if (data2.data) {
+      for (let item of data2.data.data) {
+        item.push("RP");
+      }
+      latestLogs = [...latestLogs, ...data2.data.data]
+    }
 
     // Broadcast data to all connected clients
     clients.forEach((clientSocket) => {

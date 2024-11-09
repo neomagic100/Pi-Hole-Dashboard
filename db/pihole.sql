@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `disabled_timer` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
    `time` datetime NOT NULL,
    `disableMinutes` int(4) NOT NULL,
+   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Enable the event scheduler if it is not already enabled

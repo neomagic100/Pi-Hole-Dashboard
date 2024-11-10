@@ -6,6 +6,7 @@ DATA_FIELD = "data"
 TYPE_FETCH = "fetchData"
 TYPE_LOG   = "getLogs"
 TYPE_COMMAND = "command"
+TYPE_TIMER = "timerStart"
 NO_VALUE = "None"
 FLOAT_REGEX = r'^-?\d+\.\d+$'
 
@@ -18,6 +19,7 @@ class DATA_KEYS:
    ADS_PERCENTAGE_TODAY = "ads_percentage_today"
    STATUS = "status"
    GRAVITY_LAST_UPDATED = "gravity_last_updated"
+   TIMER_KEY = "ntpTime"
 
 class DataPacket:
    def __init__(self, jsonMsg: bytearray):
@@ -34,14 +36,23 @@ class DataPacket:
          self.parseFetchData()
       elif self.dataType == TYPE_LOG:
          self.parseLogData()
+      elif self.dataType ==  TYPE_TIMER:
+         self.parseTimer()
       elif self.dataType == TYPE_COMMAND:
          return
       else:
          print("Unknown Type")
+         
+   def parseTimer(self):
+      msg = self.rawData
+      if not msg:
+         return
+      self.data = msg if isinstance(msg, int) else int(msg)
+      self.data += 3000
       
    def parseLogData(self):
       msg = self.rawData
-      if msg and len(msg) == 0:
+      if not msg or (msg and len(msg) == 0):
          return
       for nestedList in msg:
          if len(nestedList) == 0:

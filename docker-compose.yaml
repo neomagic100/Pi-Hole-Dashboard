@@ -7,7 +7,6 @@ services:
       ports:
          - "8003:8000"
       restart: always
-      # entrypoint: ["python3", "main.py"]
       volumes:
          - ./backend/:/usr/src/app
       networks:

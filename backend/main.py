@@ -1,6 +1,5 @@
 # main.py
-import websockets
-import asyncio
+
 import websocket
 import json
 from DataPacket import DataPacket
@@ -12,11 +11,11 @@ def on_open(ws):
     
 def on_message(ws, message):
     data_packet = DataPacket(message)
+    data_packet.storeData()
     print(data_packet)
 
 if __name__ == "__main__":
-    ws = websocket.WebSocketApp("ws://localhost:" + str(WEBSOCKET_PORT))
+    ws = websocket.WebSocketApp("ws://192.168.50.249:" + str(WEBSOCKET_PORT))
     ws.on_open = on_open
     ws.on_message = on_message
     ws.run_forever()
-    

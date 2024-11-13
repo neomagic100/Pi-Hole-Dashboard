@@ -43,7 +43,6 @@ const createMessage = (msgType) => {
     data: data
   });
 
-  if (msgType === API_GET_LOGS) console.log(data);
   return msg;
 }
 

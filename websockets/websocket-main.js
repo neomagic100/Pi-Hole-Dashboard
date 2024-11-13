@@ -10,6 +10,7 @@ const API_GET_LOGS = "getLogs";
 const PI_1 = 155;
 const PI_2 = 215;
 const FETCH_INTERVAL = 1000; // ms
+const DEFAULT_LOGS = 100;
 
 const key = "9708b843d7a0824df4a68d8f73b61a94d63975987e8446257b8adcb1d04c8273"
 const apiFetchDataToken = "api.php?summaryRaw&auth="
@@ -19,7 +20,7 @@ const apiFetchLogsTokenPart1 = "api.php?getAllQueries="
 const apiFetchLogsTokenPart2 = "&auth="
 const WEBSOCKET_PORT = 8008;
 
-const getUrl = (lastIP, action, numLogs = "10") => {
+const getUrl = (lastIP, action, numLogs = `${DEFAULT_LOGS / 2}`) => {
   const ip = (lastIP == PI_1) ? URL1 : URL2
   let token = "";
   if (action === API_FETCH_DATA) {

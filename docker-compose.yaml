@@ -1,4 +1,15 @@
 services:
+   frontend:
+      container_name: frontend
+      build:
+         context: Frontend-Dashboard
+         dockerfile: frontend.dockerfile
+      ports:
+         - "8002:80"
+      restart: always
+      networks:
+         - frontend_net
+
    backend:
       container_name: backend
       build:
@@ -42,6 +53,9 @@ services:
 
 networks:
    backend_net:
+      driver: bridge
+   frontend_net:
+      driver: bridge
 
 volumes:
    DB_DATA:

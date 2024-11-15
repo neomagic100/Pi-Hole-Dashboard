@@ -1,32 +1,40 @@
 services:
+   frontend:
+      container_name: frontend
+      build:
+         context: Frontend-Dashboard
+         dockerfile: frontend.dockerfile
+      ports:
+         - "8002:80"
+      restart: always
+      networks:
+         - frontend_net
+
    backend:
       container_name: backend
       build:
          context: backend
          dockerfile: backend.dockerfile
       ports:
-         - "8000:8000"
-      restart: on-failure
+         - "8003:8000"
+      restart: always
       volumes:
-         - BACKEND_DATA:/usr/src/app
-
-   engine:
-      container_name: pi-hole-engine
-      build:
-         context: pihole_requests
-         dockerfile: engine.dockerfile
-      restart: on-failure
-      ports:
-         - "8080:80"
+         - ./backend/:/usr/src/app
+      networks:
+         - backend_net
 
    middleware:
       container_name: websocket
       build:
          context: websockets
          dockerfile: middleware.dockerfile
+      env_file:
+         - websockets/.env
       ports:
          - "8008:8008"
       restart: on-failure
+      networks:
+         - backend_net
 
    db:
       container_name: db
@@ -43,6 +51,11 @@ services:
          - DB_DATA:/var/lib/mysql
          - ./db:/docker-entrypoint-initdb.d
 
+networks:
+   backend_net:
+      driver: bridge
+   frontend_net:
+      driver: bridge
+
 volumes:
    DB_DATA:
-   BACKEND_DATA:

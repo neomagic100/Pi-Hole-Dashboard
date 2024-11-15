@@ -1,0 +1,3 @@
+[submodule "Frontend-Dashboard"]
+	path = Frontend-Dashboard
+	url = git@github.com:neomagic100/Frontend-Dashboard.git

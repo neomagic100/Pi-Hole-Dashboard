@@ -12,20 +12,13 @@ services:
       networks:
          - backend_net
 
-   engine:
-      container_name: pi-hole-engine
-      build:
-         context: pihole_requests
-         dockerfile: engine.dockerfile
-      restart: on-failure
-      ports:
-         - "8080:80"
-
    middleware:
       container_name: websocket
       build:
          context: websockets
          dockerfile: middleware.dockerfile
+      env_file:
+         - websockets/.env
       ports:
          - "8008:8008"
       restart: on-failure

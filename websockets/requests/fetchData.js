@@ -5,7 +5,17 @@ const { getUrl } = require('../utils.js');
 let latestData = {};
 let latestLogs = {};
 
-// Function to fetch data from each API
+/**
+ * Fetches data from multiple sources and broadcasts it to connected WebSocket clients.
+ *
+ * This function concurrently requests data from two APIs, structures the fetched data,
+ * and then sends it to all active WebSocket clients. It uses the `getUrl` utility
+ * to build the API request URLs for two different endpoints identified by constants PI_1 and PI_2.
+ *
+ * @param {WebSocket} WebSocket - The WebSocket module used to check the connection status.
+ * @param {Set} clients - A set of connected WebSocket clients to broadcast the fetched data.
+ * @throws Will log an error if the fetching process fails.
+ */
 async function fetchData(WebSocket, clients) {
    try {
       // Fetch from multiple sources
@@ -33,6 +43,17 @@ async function fetchData(WebSocket, clients) {
    }
 }
 
+/**
+ * Fetches log data from multiple sources and broadcasts it to connected WebSocket clients.
+ *
+ * This function concurrently requests log data from two APIs, structures the fetched data,
+ * and then sends it to all active WebSocket clients. It uses the `getUrl` utility
+ * to build the API request URLs for two different endpoints identified by constants PI_1 and PI_2.
+ *
+ * @param {WebSocket} WebSocket - The WebSocket module used to check the connection status.
+ * @param {Set} clients - A set of connected WebSocket clients to broadcast the fetched data.
+ * @throws Will log an error if the fetching process fails.
+ */
 async function fetchLogs(WebSocket, clients) {
    try {
       // Fetch from multiple sources
@@ -68,6 +89,12 @@ async function fetchLogs(WebSocket, clients) {
    }
 }
 
+/**
+ * Creates a WebSocket message string to send to connected clients.
+ *
+ * @param {string} msgType - The type of message to create.
+ * @returns {string} The created message string.
+ */
 const createMessage = (msgType) => {
    let data = (msgType === API_FETCH_DATA) ? latestData : latestLogs;
    const msg = JSON.stringify({

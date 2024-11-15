@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
-const { API_SEND_DISABLE, API_SEND_ENABLE, WEBSOCKET_PORT, FETCH_INTERVAL } = require('./Constants.js');
+const { API_SEND_DISABLE, API_SEND_ENABLE, API_SEND_DISABLE_MINUTES, WEBSOCKET_PORT, FETCH_INTERVAL } = require('./Constants.js');
 const { fetchData, fetchLogs } = require('./requests/fetchData.js');
-const { sendEnablePis, sendDisablePis } = require('./requests/enablePis.js');
+const { sendEnablePis, sendDisablePis, sendDisablePisTimer } = require('./requests/enablePis.js');
 
 // Start the WebSocket server
 const wss = new WebSocket.Server({ port: WEBSOCKET_PORT });
@@ -11,9 +11,10 @@ const clients = new Set();
 wss.on('connection', (clientSocket) => {
   console.log('New client connected');
   clients.add(clientSocket);
-  console.log(clientSocket)
+
+  // Handle client messages
   clientSocket.on('message', (message) => {
-    console.log('Received message from client:', message)
+    console.log('Received message from client.');
     
     try {
       const data = JSON.parse(message);
@@ -22,6 +23,8 @@ wss.on('connection', (clientSocket) => {
         sendEnablePis();
       } else if (data.command === API_SEND_DISABLE) {
         sendDisablePis();
+      } else if (data.command === API_SEND_DISABLE_MINUTES) {
+        sendDisablePisTimer(data.data);
       } else {
         console.log("Unknown command:", data.command)
       }

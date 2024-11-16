@@ -16,7 +16,7 @@ let latestLogs = {};
  * @param {Set} clients - A set of connected WebSocket clients to broadcast the fetched data.
  * @throws Will log an error if the fetching process fails.
  */
-async function fetchData(WebSocket, clients) {
+async function fetchData(WebSocket, WebSocketClient, clients) {
    try {
       // Fetch from multiple sources
       const [data1, data2] = await Promise.all([
@@ -35,6 +35,7 @@ async function fetchData(WebSocket, clients) {
          if (clientSocket.readyState === WebSocket.OPEN) {
             const msg = createMessage(API_FETCH_DATA);
             clientSocket.send(msg);
+            WebSocketClient.send(msg);
          }
       });
 
@@ -54,7 +55,7 @@ async function fetchData(WebSocket, clients) {
  * @param {Set} clients - A set of connected WebSocket clients to broadcast the fetched data.
  * @throws Will log an error if the fetching process fails.
  */
-async function fetchLogs(WebSocket, clients) {
+async function fetchLogs(WebSocket, WebSocketClient, clients) {
    try {
       // Fetch from multiple sources
       const [data1, data2] = await Promise.all([
@@ -81,6 +82,7 @@ async function fetchLogs(WebSocket, clients) {
          if (clientSocket.readyState === WebSocket.OPEN) {
             const msg = createMessage(API_GET_LOGS);
             clientSocket.send(msg);
+            WebSocketClient.send(msg);
          }
       });
 

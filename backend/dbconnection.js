@@ -1,5 +1,5 @@
-const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = require('./config');
-let mysql = require('mysql');
+const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = require('./Constants.js');
+let mysql = require('mysql2');
 
 const connection = mysql.createConnection({
    host: DB_HOST,

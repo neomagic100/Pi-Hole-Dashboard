@@ -22,7 +22,7 @@ services:
          - "8009:8009"
       restart: always
       volumes:
-         - ./backend/:/usr/src/app
+         - ./backend/:/app
       networks:
          - backend_net
       depends_on:

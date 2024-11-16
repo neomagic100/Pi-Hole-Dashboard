@@ -1,17 +1,29 @@
 # main.py
-import websocket
+import websockets
+import asyncio
 from DataPacket import DataPacket
 
-WEBSOCKET_PORT = 8008
+WEBSOCKET_PORT = 8009
 
-def on_open(ws):
-    print("Connection opened from :8000")
+async def handler(websocket, path):
+    print(f"New connection from {websocket.remote_address}")
     
-def on_message(ws, message):
-    data_packet = DataPacket(message)
-    data_packet.storeData()
+    # Send a message to the client
+    await websocket.send("Hello, Client!")
     
-ws = websocket.WebSocketApp("ws://websocket:" + str(WEBSOCKET_PORT))
-ws.on_open = on_open
-ws.on_message = on_message
-ws.run_forever()
+    # Receive a message from the client
+    message = await websocket.recv()
+    print(f"Received message: {message}")
+    
+    # Respond to the client
+    await websocket.send(f"Echo: {message}")
+
+async def main():
+    # Start the WebSocket server on a specific address and port
+    server = await websockets.serve(handler, "localhost", WEBSOCKET_PORT)
+    print(f"WebSocket server started on ws://localhost:{WEBSOCKET_PORT}")
+    
+    # Run the server indefinitely
+    await asyncio.Future()  # Run forever
+    
+asyncio.run(main())

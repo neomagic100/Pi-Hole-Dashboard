@@ -9,6 +9,9 @@ services:
       restart: always
       networks:
          - frontend_net
+      profiles:
+         - frontend
+         - stack
 
    backend:
       container_name: backend
@@ -16,7 +19,7 @@ services:
          context: backend
          dockerfile: backend.dockerfile
       ports:
-         - "8003:8000"
+         - "8009:8009"
       restart: always
       volumes:
          - ./backend/:/usr/src/app
@@ -24,6 +27,21 @@ services:
          - backend_net
 
    middleware:
+      container_name: websocket
+      image: neomagic100/pi-hole-dashboard:middleware
+      env_file:
+         - websockets/.env
+      ports:
+         - "8008:8008"
+      restart: on-failure
+      networks:
+         - backend_net
+      profiles:
+         - backend
+         - stack
+         - prod
+   
+   middleware-dev:
       container_name: websocket
       build:
          context: websockets
@@ -35,6 +53,10 @@ services:
       restart: on-failure
       networks:
          - backend_net
+      profiles:
+         - backend
+         - dev
+         - stack
 
    db:
       container_name: db
@@ -50,7 +72,19 @@ services:
       volumes:
          - DB_DATA:/var/lib/mysql
          - ./db:/docker-entrypoint-initdb.d
-
+   
+   watchtower:
+      container_name: watchtower
+      image: containrrr/watchtower
+      restart: always
+      volumes:
+         - /var/run/docker.sock:/var/run/docker.sock
+         - ./config.json:/config.json
+      command: --interval 30
+      profiles:
+         - backend
+         - stack
+         - prod
 networks:
    backend_net:
       driver: bridge

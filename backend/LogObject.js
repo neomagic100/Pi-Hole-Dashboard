@@ -68,12 +68,12 @@ class Log {
          .tag('status', this.status) // Status
          .tag('action_taken', this.actionTaken) // Action Taken
          .tag('handled_by', this.handledBy) // Handled By
-         .field('domain_queried', this.domainQueried) // Domain Queried
-         .field('reply_code', this.replyCode) // Reply Code
-         .field('reply_time', this.replyTime) // Reply Time
-         .field('dnssec_status', this.dnssecStatus) // DNSSEC Status
-         .field('response_code', this.responseCode) // Response Code
-         .field('upstream_server', this.upstreamServer) // Upstream Server
+         .stringField('domain_queried', this.domainQueried) // Domain Queried
+         .intField('reply_code', this.replyCode) // Reply Code
+         .floatField('reply_time', parseFloat(this.replyTime)) // Reply Time
+         .stringField('dnssec_status', this.dnssecStatus) // DNSSEC Status
+         .intField('response_code', this.responseCode) // Response Code
+         .stringField('upstream_server', this.upstreamServer) // Upstream Server
          .timestamp(new Date(this.time)); // Timestamp
    }
 

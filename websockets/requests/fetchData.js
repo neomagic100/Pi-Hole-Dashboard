@@ -35,7 +35,7 @@ async function fetchData(WebSocket, WebSocketClient, clients) {
          if (clientSocket.readyState === WebSocket.OPEN) {
             const msg = createMessage(API_FETCH_DATA);
             clientSocket.send(msg);
-            WebSocketClient.send(msg);
+            WebSocketClient.send(JSON.stringify({command: API_FETCH_DATA, data: latestData}));
          }
       });
 
@@ -79,10 +79,11 @@ async function fetchLogs(WebSocket, WebSocketClient, clients) {
 
       // Broadcast data to all connected clients
       clients.forEach((clientSocket) => {
-         if (clientSocket.readyState === WebSocket.OPEN) {
+         if (clientSocket.readyState === WebSocket.OPEN && latestLogs.length > 0) {
             const msg = createMessage(API_GET_LOGS);
             clientSocket.send(msg);
-            WebSocketClient.send(msg);
+            const msgRelay = JSON.stringify({ command: API_GET_LOGS, data: latestLogs });
+            WebSocketClient.send(msgRelay);
          }
       });
 

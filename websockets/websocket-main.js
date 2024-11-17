@@ -27,7 +27,7 @@ wsClient.on('close', () => {
 });
 
 // Start the Middleware WebSocket server
-const wss = new WebSocket.Server({ port: WEBSOCKET_PORT });
+const wss = new WebSocket.Server({ address: '0.0.0.0', port: WEBSOCKET_PORT });
 const clients = new Set();
 
 // Connect new clients

@@ -1,9 +1,12 @@
 const WebSocket = require('ws');
+const http = require('http');
 const { parseMessage } = require('./utils.js')
-const { WEBSOCKET_SERVER_PORT } = require('./Constants.js');
+const { WEBSOCKET_SERVER_PORT, API_GET_LOGS } = require('./Constants.js');
+const { writeMultiLogs } = require('./influxConnection.js');
 
 // Start the WebSocket server
-const wss = new WebSocket.Server({ port: WEBSOCKET_SERVER_PORT });
+const server = http.createServer();
+const wss = new WebSocket.Server({ server });
 const clients = new Set();
 
 // Connect new clients
@@ -13,11 +16,15 @@ wss.on('connection', (clientSocket) => {
 
    // Handle client messages
    clientSocket.on('message', (message) => {
-      console.log('Received message from client.');
+      // console.log('Received message from client.');
 
       try {
          const parsedMessage = parseMessage(message);
-         console.log(parsedMessage);
+         
+         if (parsedMessage.command === API_GET_LOGS) {
+            writeMultiLogs(parsedMessage.data);
+         }
+         
       } catch (err) {
          console.error('Error processing client message:', err);
       }
@@ -31,4 +38,6 @@ wss.on('connection', (clientSocket) => {
    });
 });
 
-console.log(`WebSocket server running on ws://backend:${WEBSOCKET_SERVER_PORT}`);
+server.listen(WEBSOCKET_SERVER_PORT, '0.0.0.0', () => {
+   console.log(`WebSocket server running on ws://backend:${WEBSOCKET_SERVER_PORT}`);
+});

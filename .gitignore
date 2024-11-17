@@ -4,6 +4,12 @@ get-pip.py
 node_modules
 .vscode
 
+influx/influx-data.txt
+influx/config/
+influx/data
+
+backend/testQuery.js
+
 .venv
 venv
 */venv

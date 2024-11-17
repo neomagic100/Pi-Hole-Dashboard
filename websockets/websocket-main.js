@@ -1,10 +1,33 @@
 const WebSocket = require('ws');
-const { API_SEND_DISABLE, API_SEND_ENABLE, API_SEND_DISABLE_MINUTES, WEBSOCKET_PORT, FETCH_INTERVAL } = require('./Constants.js');
+const { API_SEND_DISABLE, API_SEND_ENABLE, API_SEND_DISABLE_MINUTES, WEBSOCKET_PORT, WEBSOCKET_CLIENT_PORT, FETCH_INTERVAL } = require('./Constants.js');
 const { fetchData, fetchLogs } = require('./requests/fetchData.js');
 const { sendEnablePis, sendDisablePis, sendDisablePisTimer } = require('./requests/enablePis.js');
 
-// Start the WebSocket server
-const wss = new WebSocket.Server({ port: WEBSOCKET_PORT });
+const clientUrl = 'ws://backend:8009';
+// Backend WebSocket client
+const wsClient = new WebSocket(clientUrl);  // URL of your WebSocket server
+
+wsClient.on('open', () => {
+  console.log('Connected to WebSocket server.');
+
+  // Send a message to the server after the connection is established
+  wsClient.send('Hello, Server!');
+});
+
+wsClient.on('message', (message) => {
+  console.log(`Received from server: ${message}`);
+});
+
+wsClient.on('error', (error) => {
+  console.error('Error in WebSocket client:', error);
+});
+
+wsClient.on('close', () => {
+  console.log('WebSocket client connection closed.');
+});
+
+// Start the Middleware WebSocket server
+const wss = new WebSocket.Server({ address: '0.0.0.0', port: WEBSOCKET_PORT });
 const clients = new Set();
 
 // Connect new clients
@@ -41,7 +64,8 @@ wss.on('connection', (clientSocket) => {
 });
 
 // Schedule the fetchData function to run at intervals (e.g., every 10 seconds)
-setInterval(() => fetchData(WebSocket, clients), FETCH_INTERVAL);
-setInterval(() => fetchLogs(WebSocket, clients), FETCH_INTERVAL);
+setInterval(() => fetchData(WebSocket, wsClient, clients), FETCH_INTERVAL);
+setInterval(() => fetchLogs(WebSocket, wsClient, clients), FETCH_INTERVAL);
 
 console.log(`WebSocket server running on ws://192.168.50.249:${WEBSOCKET_PORT}`);
+console.log(`WebSocket client sending to ws://192.168.50.249:${WEBSOCKET_CLIENT_PORT}`);

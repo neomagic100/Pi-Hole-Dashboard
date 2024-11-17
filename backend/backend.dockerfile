@@ -1,11 +1,13 @@
-FROM python
+FROM node:18-slim
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY requirements.txt ./
+COPY package*.json .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN npm install
 
 COPY . .
 
-ENTRYPOINT [ "python3", "./main.py" ]
+EXPOSE 8009
+
+CMD ["npm", "run", "serve"]

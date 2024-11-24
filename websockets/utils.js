@@ -8,8 +8,10 @@ const { DEFAULT_LOGS, PI_1, PI1_URL, PI2_URL, API_FETCH_DATA, API_SEND_ENABLE, A
  *
  * @param {number} lastIP - The last segment of the IP address to determine whether to use PI1_URL or PI2_URL.
  * @param {string} action - The API action to perform, which determines the token used in the URL.
- * @param {string} [numLogs=`${DEFAULT_LOGS / 2}`] - The number of logs to fetch, defaults to half of DEFAULT_LOGS.
+ * @param {number} [numLogs=DEFAULT_LOGS / 2] - The number of logs to fetch, defaults to half of DEFAULT_LOGS.
  * @param {number} [disableMinutes=0] - The number of minutes to disable, used only for the disable minutes action.
+ * @param {string} [listType=null] - The type of list to add to, used only for the add to list action.
+ * @param {string} [domain=null] - The domain to add, used only for the add to list action.
  * @returns {string} - The constructed URL string.
  */
 const getUrl = (lastIP, action, numLogs = `${DEFAULT_LOGS / 2}`, disableMinutes = 0, listType = null, domain = null) => {

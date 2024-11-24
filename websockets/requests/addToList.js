@@ -1,20 +1,17 @@
 const axios = require('axios');
-const { PI_1, PI_2, BLACKLIST, WHITELIST } = require('../Constants.js');
+const { PI_1, PI_2, BLACKLIST, WHITELIST, API_ADD_TO_LIST } = require('../Constants.js');
 const { getUrl } = require('../utils.js');
 
 async function sendAddToList(data) {
 
    const { domain, listType } = data;
-   console.log("Adding", domain, "to", listType)
    if (listType != null && (listType == BLACKLIST || listType == WHITELIST)) {
       try {
-         let url1 = getUrl(PI_1, listType, domain);
-         let url2 = getUrl(PI_2, listType, domain);
-         // console.log("urls created")
-         // console.log('data appended')
+         let url1 = getUrl(PI_1, API_ADD_TO_LIST,0,0, listType, domain);
+         let url2 = getUrl(PI_2, API_ADD_TO_LIST,0,0, listType, domain);
+     
          const response1 = await axios.get(url1);
          const response2 = await axios.get(url2);
-         console.log('responses received')
          // Log the response
          if (!response1.data.success) {
             console.error("Failed:", response1.data.message || response1.data);

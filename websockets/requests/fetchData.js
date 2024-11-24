@@ -64,17 +64,21 @@ async function fetchLogs(WebSocket, WebSocketClient, clients) {
       ]);
 
       if (data1.data) {
-         for (let item of data1.data.data) {
-            item.push("Proxmox");
+         if (data1.data.data) {         
+            for (let item of data1.data.data) {
+               item.push("Proxmox");
+            }
+            latestLogs = [...data1.data.data];
          }
-         latestLogs = [...data1.data.data];
       }
 
       if (data2.data) {
-         for (let item of data2.data.data) {
-            item.push("RP");
+         if (data2.data.data) {
+            for (let item of data2.data.data) {
+               item.push("RP");
+            }
+            latestLogs = [...latestLogs, ...data2.data.data]
          }
-         latestLogs = [...latestLogs, ...data2.data.data]
       }
 
       // Broadcast data to all connected clients

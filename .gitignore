@@ -9,7 +9,6 @@ influx/config/
 influx/data
 
 backend/testQuery.js
-
 .venv
 venv
 */venv

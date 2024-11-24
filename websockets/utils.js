@@ -1,6 +1,6 @@
 const Constants = require('./Constants.js');
 const { DEFAULT_LOGS, PI_1, PI1_URL, PI2_URL, API_FETCH_DATA, API_SEND_ENABLE, API_SEND_DISABLE, API_ADD_TO_LIST, PI1_KEY, PI2_KEY,
-   API_SEND_DISABLE_MINUTES, API_GET_LOGS, apiFetchDataToken, apiSendEnableToken, apiSendDisableToken, apiAddToListTokenPart1,
+   API_SEND_DISABLE_MINUTES, API_GET_LOGS, apiFetchDataToken, apiSendEnableToken, apiSendDisableToken, apiAddToListTokenPart1, apiAddToListTokenPart2,
    apiSendDisableMinutesTokenPart1, apiFetchLogsTokenPart1, apiAndAuth } = Constants;
 
 /**
@@ -12,7 +12,7 @@ const { DEFAULT_LOGS, PI_1, PI1_URL, PI2_URL, API_FETCH_DATA, API_SEND_ENABLE, A
  * @param {number} [disableMinutes=0] - The number of minutes to disable, used only for the disable minutes action.
  * @returns {string} - The constructed URL string.
  */
-const getUrl = (lastIP, action, numLogs = `${DEFAULT_LOGS / 2}`, disableMinutes = 0, listType = null) => {
+const getUrl = (lastIP, action, numLogs = `${DEFAULT_LOGS / 2}`, disableMinutes = 0, listType = null, domain = null) => {
    const ip = (lastIP == PI_1) ? PI1_URL : PI2_URL;
    const key = (lastIP == PI_1) ? PI1_KEY : PI2_KEY;
    let token = "";
@@ -27,7 +27,7 @@ const getUrl = (lastIP, action, numLogs = `${DEFAULT_LOGS / 2}`, disableMinutes 
    } else if (action === API_GET_LOGS) {
       token = `${apiFetchLogsTokenPart1}${numLogs}${apiAndAuth}`
    } else if (action === API_ADD_TO_LIST) {
-      token = `${apiAddToListTokenPart1}${listType}${apiAndAuth}`
+      token = `${apiAddToListTokenPart1}${listType}${apiAddToListTokenPart2}${domain}${apiAndAuth}`
    }
 
    return `${ip}${token}${key}`

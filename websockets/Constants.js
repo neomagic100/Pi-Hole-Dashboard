@@ -15,6 +15,7 @@ const apiFetchDataToken = "api.php?summaryRaw&auth=";
 const apiSendEnableToken = "api.php?enable&auth=";
 const apiSendDisableToken = "api.php?disable&auth=";
 const apiAddToListTokenPart1 = "api.php?list=";
+const apiAddToListTokenPart2 = "&add=";
 const apiSendDisableMinutesTokenPart1 = "api.php?disable=";
 const apiFetchLogsTokenPart1 = "api.php?getAllQueries=";
 const apiAndAuth = "&auth=";
@@ -49,6 +50,7 @@ module.exports = {
    apiSendDisableMinutesTokenPart1,
    apiFetchLogsTokenPart1,
    apiAddToListTokenPart1,
+   apiAddToListTokenPart2,
    apiAndAuth,
    WEBSOCKET_PORT,
    WEBSOCKET_CLIENT_PORT,

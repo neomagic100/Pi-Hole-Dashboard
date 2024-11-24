@@ -1,7 +1,8 @@
 const WebSocket = require('ws');
-const { API_SEND_DISABLE, API_SEND_ENABLE, API_SEND_DISABLE_MINUTES, WEBSOCKET_PORT, WEBSOCKET_CLIENT_PORT, FETCH_INTERVAL } = require('./Constants.js');
+const { API_SEND_DISABLE, API_SEND_ENABLE, API_SEND_DISABLE_MINUTES, API_ADD_TO_LIST, WEBSOCKET_PORT, WEBSOCKET_CLIENT_PORT, FETCH_INTERVAL } = require('./Constants.js');
 const { fetchData, fetchLogs } = require('./requests/fetchData.js');
 const { sendEnablePis, sendDisablePis, sendDisablePisTimer } = require('./requests/enablePis.js');
+const { sendAddToList } = require('./requests/addToList.js');
 
 const clientUrl = 'ws://backend:8009';
 // Backend WebSocket client
@@ -48,6 +49,8 @@ wss.on('connection', (clientSocket) => {
         sendDisablePis();
       } else if (data.command === API_SEND_DISABLE_MINUTES) {
         sendDisablePisTimer(data.data);
+      } else if (data.command === API_ADD_TO_LIST) {
+        sendAddToList(data.data);
       } else {
         console.log("Unknown command:", data.command)
       }

@@ -6,6 +6,7 @@ const API_SEND_DISABLE = "disable";
 const API_SEND_DISABLE_MINUTES = "disableMinutes";
 const API_SEND_ENABLE = "enable";
 const API_GET_LOGS = "getLogs";
+const API_ADD_TO_LIST = "addToList";
 const FETCH_INTERVAL = 1000; // ms
 const DEFAULT_LOGS = 100;
 const PI1_KEY = "9708b843d7a0824df4a68d8f73b61a94d63975987e8446257b8adcb1d04c8273";
@@ -13,11 +14,14 @@ const PI2_KEY ="9708b843d7a0824df4a68d8f73b61a94d63975987e8446257b8adcb1d04c8273
 const apiFetchDataToken = "api.php?summaryRaw&auth=";
 const apiSendEnableToken = "api.php?enable&auth=";
 const apiSendDisableToken = "api.php?disable&auth=";
+const apiAddToListTokenPart1 = "api.php?list=";
 const apiSendDisableMinutesTokenPart1 = "api.php?disable=";
 const apiFetchLogsTokenPart1 = "api.php?getAllQueries=";
 const apiAndAuth = "&auth=";
 const WEBSOCKET_PORT = 8008;
 const WEBSOCKET_CLIENT_PORT = 8009;
+const BLACKLIST = "black";
+const WHITELIST = "white";
 
 const ipMatch_pi1 = PI1_URL.match(/http:\/\/(\d+\.\d+\.\d+)\.(\d+)/);
 const ipMatch_pi2 = PI2_URL.match(/http:\/\/(\d+\.\d+\.\d+)\.(\d+)/);
@@ -32,6 +36,7 @@ module.exports = {
    API_SEND_DISABLE_MINUTES,
    API_SEND_ENABLE,
    API_GET_LOGS,
+   API_ADD_TO_LIST,
    PI_1,
    PI_2,
    FETCH_INTERVAL,
@@ -43,7 +48,10 @@ module.exports = {
    apiSendDisableToken,
    apiSendDisableMinutesTokenPart1,
    apiFetchLogsTokenPart1,
+   apiAddToListTokenPart1,
    apiAndAuth,
    WEBSOCKET_PORT,
-   WEBSOCKET_CLIENT_PORT
+   WEBSOCKET_CLIENT_PORT,
+   BLACKLIST,
+   WHITELIST
 };

@@ -1,8 +1,12 @@
 const WebSocket = require('ws');
-const { API_SEND_DISABLE, API_SEND_ENABLE, API_SEND_DISABLE_MINUTES, API_ADD_TO_LIST, WEBSOCKET_PORT, WEBSOCKET_CLIENT_PORT, FETCH_INTERVAL } = require('./Constants.js');
+const { API_SEND_DISABLE, API_SEND_ENABLE, API_SEND_DISABLE_MINUTES, API_ADD_TO_LIST, WEBSOCKET_PORT, WEBSOCKET_CLIENT_PORT, FETCH_INTERVAL, GET_TIMER } = require('./Constants.js');
 const { fetchData, fetchLogs } = require('./requests/fetchData.js');
 const { sendEnablePis, sendDisablePis, sendDisablePisTimer } = require('./requests/enablePis.js');
 const { sendAddToList } = require('./requests/addToList.js');
+const { Worker } = require('worker_threads');
+const path = require('path');
+let timeLeft = null;
+let worker = null;
 
 const clientUrl = 'ws://backend:8009';
 // Backend WebSocket client
@@ -45,12 +49,19 @@ wss.on('connection', (clientSocket) => {
 
       if (data.command === API_SEND_ENABLE) {
         sendEnablePis();
+        stopTimer();
       } else if (data.command === API_SEND_DISABLE) {
         sendDisablePis();
       } else if (data.command === API_SEND_DISABLE_MINUTES) {
         sendDisablePisTimer(data.data);
+        timeLeft = data.data * 60;
+        runTimer(data.data);
       } else if (data.command === API_ADD_TO_LIST) {
         sendAddToList(data.data);
+      } else if (data.command === GET_TIMER) {
+        const minutesLeft = parseInt(timeLeft / 60);
+        const secondsLeft = timeLeft % 60;
+        clientSocket.send(JSON.stringify({ command: GET_TIMER, data: { minutes: minutesLeft, seconds: secondsLeft } }));
       } else {
         console.log("Unknown command:", data.command)
       }
@@ -65,6 +76,57 @@ wss.on('connection', (clientSocket) => {
     console.log('Client disconnected');
   });
 });
+
+const getTimeLeft = () => {
+  if (timeLeft === null) {
+    return 0;
+  }
+  else {
+    return timeLeft;
+  }
+}
+
+// Run the worker and get the countdown updates
+const runTimer = (minutes) => {
+  timeLeft = minutes * 60;
+  return new Promise((resolve, reject) => {
+    seconds = minutes * 60
+    worker = new Worker(path.join(__dirname, 'worker.js'), {
+      workerData: { seconds }
+    });
+
+    worker.on('message', (message) => {
+      if (message === 0) {
+        stopTimer();
+        resolve();
+      }
+      else {
+        timeLeft = message;
+      }
+    });
+
+    worker.on('error', (error) => {
+      reject(error);
+    });
+
+    worker.on('exit', (code) => {
+      if (code !== 0) {
+        stopTimer();
+      }
+    });
+  });
+}
+
+const stopTimer = () => {
+  if (worker) {
+    worker.postMessage('stop');
+    worker.terminate();
+    timeLeft = null;
+  }
+  else {
+    timeLeft = null;
+  }
+}
 
 // Schedule the fetchData function to run at intervals (e.g., every 10 seconds)
 setInterval(() => fetchData(WebSocket, wsClient, clients), FETCH_INTERVAL);

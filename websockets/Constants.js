@@ -23,6 +23,7 @@ const WEBSOCKET_PORT = 8008;
 const WEBSOCKET_CLIENT_PORT = 8009;
 const BLACKLIST = "black";
 const WHITELIST = "white";
+const GET_TIMER = "getTimer";
 
 const ipMatch_pi1 = PI1_URL.match(/http:\/\/(\d+\.\d+\.\d+)\.(\d+)/);
 const ipMatch_pi2 = PI2_URL.match(/http:\/\/(\d+\.\d+\.\d+)\.(\d+)/);
@@ -55,5 +56,6 @@ module.exports = {
    WEBSOCKET_PORT,
    WEBSOCKET_CLIENT_PORT,
    BLACKLIST,
-   WHITELIST
+   WHITELIST,
+   GET_TIMER
 };

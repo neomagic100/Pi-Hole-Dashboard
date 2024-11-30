@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { API_FETCH_DATA, API_GET_LOGS, PI_1, PI_2 } = require('../Constants.js');
+const { API_FETCH_DATA, API_GET_LOGS, PI_1, PI_2, STATUS, STATUS_INDEX } = require('../Constants.js');
 const { getUrl } = require('../utils.js');
 
 let latestData = {};
@@ -67,6 +67,8 @@ async function fetchLogs(WebSocket, WebSocketClient, clients) {
       if (data1.data) {
          if (data1.data.data) {         
             for (let item of data1.data.data) {
+               let a = [1, 2, 3];
+               
                item.push("Proxmox");
             }
             latestLogs = [...data1.data.data];
@@ -82,6 +84,8 @@ async function fetchLogs(WebSocket, WebSocketClient, clients) {
          }
       }
 
+      changeStatusValue();
+
       // Broadcast data to all connected clients
       clients.forEach((clientSocket) => {
          if (clientSocket.readyState === WebSocket.OPEN && latestLogs.length > 0) {
@@ -94,6 +98,14 @@ async function fetchLogs(WebSocket, WebSocketClient, clients) {
 
    } catch (error) {
       console.error('Error fetching data:', error);
+   }
+}
+
+const changeStatusValue = () => {
+   for (let i = 0; i < latestLogs.length; i++) {
+      const currentValue = latestLogs[i][STATUS_INDEX];
+      const stringValue = STATUS[currentValue];
+      latestLogs[i][STATUS_INDEX] = stringValue;
    }
 }
 

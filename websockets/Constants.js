@@ -25,6 +25,14 @@ const BLACKLIST = "black";
 const WHITELIST = "white";
 const GET_TIMER = "getTimer";
 
+const STATUS_INDEX = 4;
+const STATUS = {
+   '1': 'Gravity Blocked',
+   '2': 'OK',
+   '3': 'Cached',
+   '14': 'Blocked by custom rule'
+}
+
 const ipMatch_pi1 = PI1_URL.match(/http:\/\/(\d+\.\d+\.\d+)\.(\d+)/);
 const ipMatch_pi2 = PI2_URL.match(/http:\/\/(\d+\.\d+\.\d+)\.(\d+)/);
 const PI_1 = ipMatch_pi1 ? parseInt(ipMatch_pi1[2], 10) : null;
@@ -57,5 +65,7 @@ module.exports = {
    WEBSOCKET_CLIENT_PORT,
    BLACKLIST,
    WHITELIST,
-   GET_TIMER
+   GET_TIMER,
+   STATUS_INDEX,
+   STATUS
 };

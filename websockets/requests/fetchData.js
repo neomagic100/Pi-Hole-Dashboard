@@ -104,8 +104,12 @@ async function fetchLogs(WebSocket, WebSocketClient, clients) {
 const changeStatusValue = () => {
    for (let i = 0; i < latestLogs.length; i++) {
       const currentValue = latestLogs[i][STATUS_INDEX];
-      const stringValue = STATUS[currentValue];
+      let stringValue = STATUS[currentValue];
+      if (stringValue === undefined || stringValue === null) {
+         stringValue = `Custom Rule (${currentValue})`;
+      }
       latestLogs[i][STATUS_INDEX] = stringValue;
+      
    }
 }
 

@@ -44,21 +44,23 @@ async function sendDisablePis() {
 /**
  * Sends a request to disable Pis for a specified number of minutes.
  *
- * @param {number} numMinutes - The number of minutes to disable the Pis.
+ * @param {number} disableMinutes - The number of minutes to disable the Pis.
  * @returns {Promise<number>} - A promise that resolves to the number of minutes the Pis are disabled.
  * @throws Will log an error if the request fails.
  */
-async function sendDisablePisTimer(numMinutes) {
+async function sendDisablePisTimer(disableMinutes) {
+   const url1 = getUrl(PI_1, API_SEND_DISABLE_MINUTES, 0, disableMinutes * 60);
+   const url2 = getUrl(PI_2, API_SEND_DISABLE_MINUTES, 0, disableMinutes * 60);
    try {
       await Promise.all([
-         axios.get(getUrl(PI_1, API_SEND_DISABLE_MINUTES, numMinutes)),
-         axios.get(getUrl(PI_2, API_SEND_DISABLE_MINUTES, numMinutes))
+         axios.get(url1),
+         axios.get(url2)
       ]);
    } catch (error) {
       console.error('Error sending data:', error);
    }
 
-   return numMinutes;
+   return disableMinutes;
 }
 
 module.exports = { sendEnablePis, sendDisablePis, sendDisablePisTimer };

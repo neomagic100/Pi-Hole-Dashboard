@@ -16,7 +16,7 @@ let latestLogs = {};
  * @param {Set} clients - A set of connected WebSocket clients to broadcast the fetched data.
  * @throws Will log an error if the fetching process fails.
  */
-async function fetchData(WebSocket, WebSocketClient, clients) {
+async function fetchData(WebSocket, WebSocketClient, clients, timeLeft) {
    try {
       // Fetch from multiple sources
       const [data1, data2] = await Promise.all([
@@ -27,9 +27,10 @@ async function fetchData(WebSocket, WebSocketClient, clients) {
       // Structure data as needed
       latestData = {
          pi1: data1.data,
-         pi2: data2.data
+         pi2: data2.data,
+         timeLeft: timeLeft === null ? 0 : timeLeft
       };
-
+      
       // Broadcast data to all connected clients
       clients.forEach((clientSocket) => {
          if (clientSocket.readyState === WebSocket.OPEN) {

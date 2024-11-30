@@ -59,9 +59,11 @@ wss.on('connection', (clientSocket) => {
       } else if (data.command === API_ADD_TO_LIST) {
         sendAddToList(data.data);
       } else if (data.command === GET_TIMER) {
+        console.log(data.command, data.data)
         const minutesLeft = parseInt(timeLeft / 60);
         const secondsLeft = timeLeft % 60;
-        clientSocket.send(JSON.stringify({ command: GET_TIMER, data: { minutes: minutesLeft, seconds: secondsLeft } }));
+        console.log({ type: GET_TIMER, data: { minutes: minutesLeft, seconds: secondsLeft } });
+        clientSocket.send(JSON.stringify({ type: GET_TIMER, data: { minutes: minutesLeft, seconds: secondsLeft } }));
       } else {
         console.log("Unknown command:", data.command)
       }
@@ -129,7 +131,7 @@ const stopTimer = () => {
 }
 
 // Schedule the fetchData function to run at intervals (e.g., every 10 seconds)
-setInterval(() => fetchData(WebSocket, wsClient, clients), FETCH_INTERVAL);
+setInterval(() => fetchData(WebSocket, wsClient, clients, timeLeft), FETCH_INTERVAL);
 setInterval(() => fetchLogs(WebSocket, wsClient, clients), FETCH_INTERVAL);
 
 console.log(`WebSocket server running on ws://192.168.50.249:${WEBSOCKET_PORT}`);

@@ -134,5 +134,5 @@ const stopTimer = () => {
 setInterval(() => fetchData(WebSocket, wsClient, clients, timeLeft), FETCH_INTERVAL);
 setInterval(() => fetchLogs(WebSocket, wsClient, clients), FETCH_INTERVAL);
 
-console.log(`WebSocket server running on ws://192.168.1.216:${WEBSOCKET_PORT}`);
-console.log(`WebSocket client sending to ws://192.168.1.216:${WEBSOCKET_CLIENT_PORT}`);
+console.log(`WebSocket server running on ws://192.168.1.220:${WEBSOCKET_PORT}`);
+console.log(`WebSocket client sending to ws://192.168.1.220:${WEBSOCKET_CLIENT_PORT}`);

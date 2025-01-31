@@ -1,6 +1,6 @@
 
-const PI1_URL = "http://192.168.50.155/admin/";
-const PI2_URL = "http://192.168.50.215/admin/";
+const PI1_URL = "http://192.168.1.155/admin/";
+const PI2_URL = "http://192.168.1.215/admin/";
 const API_FETCH_DATA = "fetchData";
 const API_SEND_DISABLE = "disable";
 const API_SEND_DISABLE_MINUTES = "disableMinutes";

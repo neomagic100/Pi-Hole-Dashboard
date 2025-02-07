@@ -106,7 +106,7 @@ services:
       container_name: influx
       image: influxdb:2.7
       volumes:
-         - /root/pi-hole-dashboard-backend/influx/data/:/var/lib/influxdb2
+#         - /root/pi-hole-dashboard-backend/influx/data/:/var/lib/influxdb2
          - /root/pi-hole-dashboard-backend/influx/config/:/etc/influxdb2
          - INFLUXDB_DATA:/var/lib/influxdb2
       env_file:

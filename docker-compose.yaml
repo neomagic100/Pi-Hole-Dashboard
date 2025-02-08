@@ -122,6 +122,21 @@ services:
          - stack
          - dev
    
+   apiListener:
+      container_name: apiListener
+      build:
+         context: apiListener
+         dockerfile: apiListener.dockerfile
+      env_file:
+         - ./apiListener/.env
+      restart: on-failure
+      networks:
+         - backend_net
+      profiles:
+         - backend
+         - stack
+         - dev
+   
    watchtower:
       container_name: watchtower
       image: containrrr/watchtower

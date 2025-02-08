@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { API_FETCH_DATA, API_GET_LOGS, PI_1, PI_2 } = require('../Constants.js');
+const { API_FETCH_DATA, API_GET_LOGS, PI_1, PI_2, STATUS, STATUS_INDEX } = require('../Constants.js');
 const { getUrl } = require('../utils.js');
 
 let latestData = {};
@@ -16,7 +16,7 @@ let latestLogs = {};
  * @param {Set} clients - A set of connected WebSocket clients to broadcast the fetched data.
  * @throws Will log an error if the fetching process fails.
  */
-async function fetchData(WebSocket, clients) {
+async function fetchData(WebSocket, WebSocketClient, clients, timeLeft) {
    try {
       // Fetch from multiple sources
       const [data1, data2] = await Promise.all([
@@ -27,14 +27,16 @@ async function fetchData(WebSocket, clients) {
       // Structure data as needed
       latestData = {
          pi1: data1.data,
-         pi2: data2.data
+         pi2: data2.data,
+         timeLeft: timeLeft === null ? 0 : timeLeft
       };
-
+      
       // Broadcast data to all connected clients
       clients.forEach((clientSocket) => {
          if (clientSocket.readyState === WebSocket.OPEN) {
             const msg = createMessage(API_FETCH_DATA);
             clientSocket.send(msg);
+            WebSocketClient.send(JSON.stringify({command: API_FETCH_DATA, data: latestData}));
          }
       });
 
@@ -54,7 +56,7 @@ async function fetchData(WebSocket, clients) {
  * @param {Set} clients - A set of connected WebSocket clients to broadcast the fetched data.
  * @throws Will log an error if the fetching process fails.
  */
-async function fetchLogs(WebSocket, clients) {
+async function fetchLogs(WebSocket, WebSocketClient, clients) {
    try {
       // Fetch from multiple sources
       const [data1, data2] = await Promise.all([
@@ -63,29 +65,51 @@ async function fetchLogs(WebSocket, clients) {
       ]);
 
       if (data1.data) {
-         for (let item of data1.data.data) {
-            item.push("Proxmox");
+         if (data1.data.data) {         
+            for (let item of data1.data.data) {
+               let a = [1, 2, 3];
+               
+               item.push("Proxmox");
+            }
+            latestLogs = [...data1.data.data];
          }
-         latestLogs = [...data1.data.data];
       }
 
       if (data2.data) {
-         for (let item of data2.data.data) {
-            item.push("RP");
+         if (data2.data.data) {
+            for (let item of data2.data.data) {
+               item.push("RP");
+            }
+            latestLogs = [...latestLogs, ...data2.data.data]
          }
-         latestLogs = [...latestLogs, ...data2.data.data]
       }
+
+      changeStatusValue();
 
       // Broadcast data to all connected clients
       clients.forEach((clientSocket) => {
-         if (clientSocket.readyState === WebSocket.OPEN) {
+         if (clientSocket.readyState === WebSocket.OPEN && latestLogs.length > 0) {
             const msg = createMessage(API_GET_LOGS);
             clientSocket.send(msg);
+            const msgRelay = JSON.stringify({ command: API_GET_LOGS, data: latestLogs });
+            WebSocketClient.send(msgRelay);
          }
       });
 
    } catch (error) {
       console.error('Error fetching data:', error);
+   }
+}
+
+const changeStatusValue = () => {
+   for (let i = 0; i < latestLogs.length; i++) {
+      const currentValue = latestLogs[i][STATUS_INDEX];
+      let stringValue = STATUS[currentValue];
+      if (stringValue === undefined || stringValue === null) {
+         stringValue = `Custom Rule (${currentValue})`;
+      }
+      latestLogs[i][STATUS_INDEX] = stringValue;
+      
    }
 }
 

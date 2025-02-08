@@ -4,6 +4,18 @@ get-pip.py
 node_modules
 .vscode
 
+**/*/*.orig
+
+**/_BACKUP_*.env
+**/_BASE_*.env
+**/_REMOTE_*.env
+**/_LOCAL_*.env
+
+influx/influx-data.txt
+influx/config/
+influx/data
+
+backend/testQuery.js
 .venv
 venv
 */venv

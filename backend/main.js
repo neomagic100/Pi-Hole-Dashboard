@@ -44,10 +44,10 @@ wss.on('connection', (clientSocket) => {
 const PORT = process.env.PI_HOLE_API_PORT || API_LISTEN_PORT;
 
 const disablePiHole = async (url, apiSendDisableMinutesTokenPart1, minutes, apiAndAuth, key) => {
-   console.log("Sending request to " + url + apiSendDisableMinutesTokenPart1 + minutes + apiAndAuth + key);
-   const response = await fetch(url + apiSendDisableMinutesTokenPart1 + minutes + apiAndAuth + key);
+   const seconds = minutes * 60;
+   const response = await fetch(url + apiSendDisableMinutesTokenPart1 + seconds + apiAndAuth + key);
    if (!response.ok) {
-      throw new Error('Network response was not ok');
+      throw new Error('Network response was not ok ' + response.status);
    }
 };
 

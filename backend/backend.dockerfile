@@ -12,5 +12,4 @@ COPY ./ ./
 EXPOSE 8009
 EXPOSE 3000
 
-CMD ["/bin/sh" , "-c" , "ls"]
-# CMD ["npm", "run", "serve"]
+CMD ["npm", "run", "serve"]

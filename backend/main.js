@@ -1,9 +1,9 @@
+const express = require("express");
 const WebSocket = require('ws');
 const http = require('http');
 const { parseMessage } = require('./utils.js')
 const { WEBSOCKET_SERVER_PORT, API_GET_LOGS, API_LISTEN_PORT, API_DISABLE_PI, apiSendDisableMinutesTokenPart1, apiAndAuth, PI1_KEY, PI2_KEY, PI1_URL, PI2_URL } = require('./Constants.js');
 const { writeMultiLogs } = require('./influxConnection.js');
-const express = require("express");
 
 // Start the WebSocket server
 const server = http.createServer();

@@ -130,6 +130,8 @@ services:
       env_file:
          - ./api-listener/.env
       restart: on-failure
+      ports:
+         - "3000:3000"
       networks:
          - backend_net
       profiles:

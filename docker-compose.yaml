@@ -53,7 +53,7 @@ services:
          - backend
          - stack
          - prod
-   
+
    middleware:
       container_name: websocket
       build:
@@ -121,14 +121,14 @@ services:
          - backend
          - stack
          - dev
-   
-   apiListener:
-      container_name: apiListener
+
+   api-listener:
+      container_name: api-listener
       build:
-         context: apiListener
-         dockerfile: apiListener.dockerfile
+         context: api-listener
+         dockerfile: api-listener.dockerfile
       env_file:
-         - ./apiListener/.env
+         - ./api-listener/.env
       restart: on-failure
       networks:
          - backend_net
@@ -136,7 +136,7 @@ services:
          - backend
          - stack
          - dev
-   
+
    watchtower:
       container_name: watchtower
       image: containrrr/watchtower

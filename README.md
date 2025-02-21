@@ -63,7 +63,7 @@ Contributions are welcome! Follow these steps:
    ```
 3. Commit your changes:
    ```bash
-   git commit -m "Add some feature"
+   git commit -S -m "Add some feature"
    ```
 4. Push to your branch:
    ```bash

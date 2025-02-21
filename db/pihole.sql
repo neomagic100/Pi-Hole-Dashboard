@@ -1,5 +1,3 @@
-USE pihole;
-
 CREATE TABLE IF NOT EXISTS `query_log` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
    `queryTime` datetime NOT NULL,

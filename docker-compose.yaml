@@ -1,61 +1,130 @@
 services:
-   frontend:
-      container_name: frontend
-      build:
-         context: Frontend-Dashboard
-         dockerfile: frontend.dockerfile
-      ports:
-         - "8002:80"
-      restart: always
-      networks:
-         - frontend_net
+  backend:
+    container_name: backend
+    build:
+        context: backend
+        dockerfile: backend.dockerfile
+    ports:
+        - "8009:8009"
+    env_file:
+        - backend/.env
+    restart: always
+    volumes:
+        - ./backend/:/app
+    networks:
+        - backend_net
+    depends_on:
+        db:
+          condition: service_healthy
+        influx:
+          condition: service_started
+    profiles:
+        - backend
+        - stack
+        - dev
+        - prod
 
-   backend:
-      container_name: backend
-      build:
-         context: backend
-         dockerfile: backend.dockerfile
-      ports:
-         - "8003:8000"
-      restart: always
-      volumes:
-         - ./backend/:/usr/src/app
-      networks:
-         - backend_net
+  middleware:
+    container_name: websocket
+    build:
+        context: websockets
+        dockerfile: middleware.dockerfile
+    env_file:
+        - websockets/.env
+    ports:
+        - "8008:8008"
+    restart: on-failure
+    volumes:
+        - ./websockets/:/app
+    networks:
+        - backend_net
+    profiles:
+        - backend
+        - dev
+        - stack
+    depends_on:
+        backend:
+          condition: service_started
 
-   middleware:
-      container_name: websocket
-      build:
-         context: websockets
-         dockerfile: middleware.dockerfile
-      env_file:
-         - websockets/.env
-      ports:
-         - "8008:8008"
-      restart: on-failure
-      networks:
-         - backend_net
+  db:
+    container_name: db
+    image: mysql:latest
+    restart: always
+    environment:
+        MYSQL_DATABASE: "pihole"
+        MYSQL_USER: "user"
+        MYSQL_PASSWORD: "password"
+        MYSQL_ROOT_PASSWORD: "password"
+    ports:
+        - "3306:3306"
+    networks:
+        - backend_net
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+        interval: 10s
+        timeout: 5s
+        retries: 3
+    volumes:
+        - DB_DATA:/var/lib/mysql
+        - ./db:/docker-entrypoint-initdb.d
+    profiles:
+        - backend
+        - stack
+        - dev
+        - prod
 
-   db:
-      container_name: db
-      image: mysql:latest
-      restart: always
-      environment:
-         MYSQL_DATABASE: "pihole"
-         MYSQL_USER: "user"
-         MYSQL_PASSWORD: "password"
-         MYSQL_ROOT_PASSWORD: "password"
-      ports:
-         - "3306:3306"
-      volumes:
-         - DB_DATA:/var/lib/mysql
-         - ./db:/docker-entrypoint-initdb.d
+  influx:
+    container_name: influx
+    image: influxdb:2.7
+    volumes:
+#         - /root/pi-hole-dashboard-backend/influx/data/:/var/lib/influxdb2
+        - /root/pi-hole-dashboard-backend/influx/config/:/etc/influxdb2
+        - INFLUXDB_DATA:/var/lib/influxdb2
+    env_file:
+        - influx/.env
+    restart: on-failure
+    ports:
+        - "8086:8086"
+    networks:
+        - backend_net
+    profiles:
+        - backend
+        - stack
+        - dev
+
+  api-listener:
+    container_name: api-listener
+    build:
+        context: api-listener
+        dockerfile: api-listener.dockerfile
+    env_file:
+        - ./api-listener/.env
+    restart: on-failure
+    ports:
+        - "3000:3000"
+    networks:
+        - backend_net
+    profiles:
+        - backend
+        - stack
+        - dev
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./config.json:/config.json
+    command: --interval 30
+    profiles:
+        - backend
+        - stack
+        - prod
 
 networks:
-   backend_net:
-      driver: bridge
-   frontend_net:
-      driver: bridge
+  backend_net:
 
 volumes:
-   DB_DATA:
+  DB_DATA:
+  INFLUXDB_DATA:
